@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 )
 
 var outputFileFlag = flag.String("o", "", "output file")
@@ -37,8 +41,21 @@ func main() {
 }
 
 func run(outputFile, inputFile string) error {
-	typstCmd := exec.Command("typst", "compile", inputFile, outputFile)
-	typstCmd.Stdout = os.Stdout
-	typstCmd.Stderr = os.Stderr
-	return typstCmd.Run()
+	source, err := os.ReadFile(inputFile)
+	if err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	converter := goldmark.New(goldmark.WithExtensions(extension.GFM))
+	err = converter.Convert(source, &buf)
+	if err != nil {
+		return err
+	}
+
+	typst := exec.Command("typst", "compile", "-", outputFile)
+	typst.Stdin = &buf
+	typst.Stdout = os.Stdout
+	typst.Stderr = os.Stderr
+	return typst.Run()
 }
