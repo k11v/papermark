@@ -9,6 +9,9 @@ import (
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer"
+	"github.com/yuin/goldmark/util"
 )
 
 var outputFileFlag = flag.String("o", "", "output file")
@@ -47,7 +50,24 @@ func run(outputFile, inputFile string) error {
 	}
 
 	var buf bytes.Buffer
-	converter := goldmark.New(goldmark.WithExtensions(extension.GFM))
+	converter := goldmark.New(
+		goldmark.WithExtensions(
+			extension.Linkify,         // https://github.github.com/gfm/#autolinks-extension-
+			&TableExtension{},         // https://github.github.com/gfm/#tables-extension-
+			&StrikethroughExtension{}, // https://github.github.com/gfm/#strikethrough-extension-
+			&TaskCheckBoxExtension{},  // https://github.github.com/gfm/#task-list-items-extension-
+			// TODO: Math.
+			// TODO: Footnotes (https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/).
+			// TODO: Wikilinks.
+			// TODO: Attributes.
+			// TODO: YAML metadata.
+		),
+		goldmark.WithRenderer(
+			renderer.NewRenderer(renderer.WithNodeRenderers(
+				util.Prioritized(NewRenderer(), 1000)),
+			),
+		),
+	)
 	err = converter.Convert(source, &buf)
 	if err != nil {
 		return err
@@ -58,4 +78,45 @@ func run(outputFile, inputFile string) error {
 	typst.Stdout = os.Stdout
 	typst.Stderr = os.Stderr
 	return typst.Run()
+}
+
+// TableExtension is based on [github.com/yuin/goldmark/extension.Table].
+type TableExtension struct{}
+
+func (e *TableExtension) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(
+		parser.WithParagraphTransformers(
+			util.Prioritized(extension.NewTableParagraphTransformer(), 200),
+		),
+		parser.WithASTTransformers(
+			util.Prioritized(extension.NewTableASTTransformer(), 0),
+		),
+	)
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(
+		util.Prioritized(NewTableRenderer(), 500),
+	))
+}
+
+// StrikethroughExtension is based on [github.com/yuin/goldmark/extension.Strikethrough].
+type StrikethroughExtension struct{}
+
+func (e *StrikethroughExtension) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(parser.WithInlineParsers(
+		util.Prioritized(extension.NewStrikethroughParser(), 500),
+	))
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(
+		util.Prioritized(NewStrikethroughRenderer(), 500),
+	))
+}
+
+// TaskCheckBoxExtension is based on [github.com/yuin/goldmark/extension.TaskList].
+type TaskCheckBoxExtension struct{}
+
+func (e *TaskCheckBoxExtension) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(parser.WithInlineParsers(
+		util.Prioritized(extension.NewTaskCheckBoxParser(), 0),
+	))
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(
+		util.Prioritized(NewTaskCheckBoxRenderer(), 500),
+	))
 }
