@@ -2,6 +2,7 @@ package main
 
 import (
 	"log/slog"
+	"strings"
 
 	"github.com/yuin/goldmark/ast"
 	extensionast "github.com/yuin/goldmark/extension/ast"
@@ -45,7 +46,13 @@ func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node
 }
 
 func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderHeading")
+	if entering {
+		n := node.(*ast.Heading)
+		_, _ = w.WriteString(strings.Repeat("=", n.Level))
+		_ = w.WriteByte(' ')
+	} else {
+		_ = w.WriteByte('\n')
+	}
 	return ast.WalkContinue, nil
 }
 
