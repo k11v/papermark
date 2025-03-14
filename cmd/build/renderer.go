@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log/slog"
+
 	"github.com/yuin/goldmark/ast"
 	extensionast "github.com/yuin/goldmark/extension/ast"
 	"github.com/yuin/goldmark/renderer"
@@ -38,78 +40,97 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 }
 
 func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderDocument")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderHeading")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderBlockquote(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderBlockquote")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderCodeBlock")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderFencedCodeBlock")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderHTMLBlock")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderList")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderListItem")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderParagraph")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTextBlock")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderThematicBreak(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderThematicBreak")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderAutoLink")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderCodeSpan")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderEmphasis")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderImage")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderLink")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderRawHTML(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderRawHTML")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderText")
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderString(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderString")
 	return ast.WalkContinue, nil
 }
 
@@ -128,18 +149,22 @@ func (r *TableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 }
 
 func (r *TableRenderer) renderTable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTable")
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableHeader(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTableHeader")
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableRow(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTableRow")
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableCell(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTableCell")
 	return ast.WalkContinue, nil
 }
 
@@ -155,6 +180,7 @@ func (r *StrikethroughRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegis
 }
 
 func (r *StrikethroughRenderer) renderStrikethrough(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderStrikethrough")
 	return ast.WalkContinue, nil
 }
 
@@ -170,5 +196,6 @@ func (r *TaskCheckBoxRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegist
 }
 
 func (r *TaskCheckBoxRenderer) renderTaskCheckBox(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderTaskCheckBox")
 	return ast.WalkContinue, nil
 }
