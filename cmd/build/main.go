@@ -14,7 +14,10 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-var outputFileFlag = flag.String("o", "", "output file")
+var (
+	outputFileFlag = flag.String("o", "", "output file")
+	sourceFileFlag = flag.String("s", "", "source file")
+)
 
 func main() {
 	flag.Parse()
@@ -24,6 +27,8 @@ func main() {
 		_, _ = fmt.Fprint(os.Stderr, "error: empty output file flag\n")
 		os.Exit(1)
 	}
+
+	sourceFile := *sourceFileFlag
 
 	inputFile := flag.Arg(0)
 	if inputFile == "" {
@@ -36,14 +41,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := run(outputFile, inputFile)
+	err := run(outputFile, sourceFile, inputFile)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(outputFile, inputFile string) error {
+func run(outputFile, sourceFile, inputFile string) error {
 	source, err := os.ReadFile(inputFile)
 	if err != nil {
 		return err
@@ -71,6 +76,13 @@ func run(outputFile, inputFile string) error {
 	err = converter.Convert(source, &buf)
 	if err != nil {
 		return err
+	}
+
+	if sourceFile != "" {
+		err = os.WriteFile(sourceFile, buf.Bytes(), 0o600)
+		if err != nil {
+			return err
+		}
 	}
 
 	typst := exec.Command("typst", "compile", "-", outputFile)
