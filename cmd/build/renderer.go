@@ -125,7 +125,19 @@ func (r *Renderer) renderRawHTML(w util.BufWriter, source []byte, node ast.Node,
 }
 
 func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderText")
+	if entering {
+		n := node.(*ast.Text)
+		if n.IsRaw() {
+			unsafeWrite(w, n.Value(source))
+		} else {
+			safeWrite(w, n.Value(source))
+			if n.HardLineBreak() {
+				_, _ = w.Write([]byte{' ', '\\', '\n'})
+			} else if n.SoftLineBreak() {
+				_ = w.WriteByte('\n')
+			}
+		}
+	}
 	return ast.WalkContinue, nil
 }
 
