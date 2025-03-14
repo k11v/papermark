@@ -199,3 +199,12 @@ func (r *TaskCheckBoxRenderer) renderTaskCheckBox(w util.BufWriter, source []byt
 	slog.Error("unimplemented renderTaskCheckBox")
 	return ast.WalkContinue, nil
 }
+
+func unsafeWrite(w util.BufWriter, p []byte) {
+	_, _ = w.Write(p)
+}
+
+func safeWrite(w util.BufWriter, p []byte) {
+	// TODO: Escape.
+	_, _ = w.Write(p)
+}
