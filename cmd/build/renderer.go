@@ -242,3 +242,8 @@ func contentWrite(w util.BufWriter, p []byte) {
 	// TODO: Escape (with line start).
 	_, _ = w.Write(p)
 }
+
+func strWrite(w util.BufWriter, p []byte) {
+	// TODO: Escape.
+	_, _ = w.Write(p)
+}
