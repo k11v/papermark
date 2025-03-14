@@ -87,7 +87,10 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 }
 
 func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderParagraph")
+	// TODO: Consider line start escapes.
+	if !entering {
+		_ = w.WriteByte('\n')
+	}
 	return ast.WalkContinue, nil
 }
 
