@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"log/slog"
 	"strings"
 
@@ -109,9 +110,26 @@ func (r *Renderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderCodeSpan")
-	return ast.WalkContinue, nil
+func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		_, _ = w.WriteString("#raw")
+		_ = w.WriteByte('(')
+		_ = w.WriteByte('"')
+		for c := n.FirstChild(); c != nil; c = c.NextSibling() {
+			v := c.(*ast.Text).Value(source)
+			if bytes.HasSuffix(v, []byte("\n")) {
+				strWrite(w, v[:len(v)-1])
+				strWrite(w, []byte(" "))
+			} else {
+				strWrite(w, v)
+			}
+		}
+		_ = w.WriteByte('"')
+		return ast.WalkSkipChildren, nil
+	} else {
+		_ = w.WriteByte(')')
+		return ast.WalkContinue, nil
+	}
 }
 
 func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
