@@ -115,7 +115,19 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node
 }
 
 func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderEmphasis")
+	// As of Typst 0.13, the `_foo_` syntax works only at word
+	// boundaries when the `#emph[foo]` syntax works anywhere.
+	if entering {
+		n := node.(*ast.Emphasis)
+		fn := "#emph"
+		if n.Level == 2 {
+			fn = "#strong"
+		}
+		_, _ = w.WriteString(fn)
+		_ = w.WriteByte('[')
+	} else {
+		_ = w.WriteByte(']')
+	}
 	return ast.WalkContinue, nil
 }
 
