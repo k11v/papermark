@@ -133,8 +133,6 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, e
 }
 
 func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	// As of Typst 0.13, the `_foo_` syntax works only at word
-	// boundaries when the `#emph[foo]` syntax works anywhere.
 	if entering {
 		n := node.(*ast.Emphasis)
 		fn := "#emph"
