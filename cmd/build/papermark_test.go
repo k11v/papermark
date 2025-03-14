@@ -13,16 +13,16 @@ func TestPapermark(t *testing.T) {
 		WantTypst string
 	}{
 		// Hard line breaks
-		{Markdown: "foo  \nbaz\n", WantTypst: "foo \\\nbaz\n"},
-		{Markdown: "*foo  \nbar*\n", WantTypst: "_foo \\\nbar_\n"},
-		{Markdown: "`code  \nspan`\n", WantTypst: "`code   span`\n"},
-		{Markdown: "<a href=\"foo  \nbar\">\n", WantTypst: "\n"},
-		{Markdown: "foo  \n", WantTypst: "foo\n"},
-		{Markdown: "### foo  \n", WantTypst: "=== foo\n"},
+		{Markdown: "foo  \nbaz\n", WantTypst: "foo \\\nbaz\n\n"},
+		{Markdown: "*foo  \nbar*\n", WantTypst: "#emph[foo \\\nbar]\n\n"},
+		{Markdown: "`code  \nspan`\n", WantTypst: "#raw(\"code   span\")\n\n"},
+		{Markdown: "<a href=\"foo  \nbar\">\n", WantTypst: "\n\n"},
+		{Markdown: "foo  \n", WantTypst: "foo\n\n"},
+		{Markdown: "### foo  \n", WantTypst: "=== foo\n\n"},
 
 		// Soft line breaks
-		{Markdown: "foo\nbaz\n", WantTypst: "foo\nbaz\n"},
-		{Markdown: "foo \n baz\n", WantTypst: "foo\nbaz\n"},
+		{Markdown: "foo\nbaz\n", WantTypst: "foo\nbaz\n\n"},
+		{Markdown: "foo \n baz\n", WantTypst: "foo\nbaz\n\n"},
 	}
 
 	for _, tt := range tests {
