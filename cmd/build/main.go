@@ -55,24 +55,7 @@ func run(outputFile, sourceFile, inputFile string) error {
 	}
 
 	var buf bytes.Buffer
-	converter := goldmark.New(
-		goldmark.WithExtensions(
-			extension.Linkify,         // https://github.github.com/gfm/#autolinks-extension-
-			&TableExtension{},         // https://github.github.com/gfm/#tables-extension-
-			&StrikethroughExtension{}, // https://github.github.com/gfm/#strikethrough-extension-
-			&TaskCheckBoxExtension{},  // https://github.github.com/gfm/#task-list-items-extension-
-			// TODO: Math.
-			// TODO: Footnotes (https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/).
-			// TODO: Wikilinks.
-			// TODO: Attributes.
-			// TODO: YAML metadata.
-		),
-		goldmark.WithRenderer(
-			renderer.NewRenderer(renderer.WithNodeRenderers(
-				util.Prioritized(NewRenderer(), 1000)),
-			),
-		),
-	)
+	converter := NewPapermark()
 	err = converter.Convert(source, &buf)
 	if err != nil {
 		return err
@@ -90,6 +73,27 @@ func run(outputFile, sourceFile, inputFile string) error {
 	typst.Stdout = os.Stdout
 	typst.Stderr = os.Stderr
 	return typst.Run()
+}
+
+func NewPapermark() goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithExtensions(
+			extension.Linkify,         // https://github.github.com/gfm/#autolinks-extension-
+			&TableExtension{},         // https://github.github.com/gfm/#tables-extension-
+			&StrikethroughExtension{}, // https://github.github.com/gfm/#strikethrough-extension-
+			&TaskCheckBoxExtension{},  // https://github.github.com/gfm/#task-list-items-extension-
+			// TODO: Math.
+			// TODO: Footnotes (https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/).
+			// TODO: Wikilinks.
+			// TODO: Attributes.
+			// TODO: YAML metadata.
+		),
+		goldmark.WithRenderer(
+			renderer.NewRenderer(renderer.WithNodeRenderers(
+				util.Prioritized(NewRenderer(), 1000)),
+			),
+		),
+	)
 }
 
 // TableExtension is based on [github.com/yuin/goldmark/extension.Table].
