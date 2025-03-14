@@ -152,7 +152,7 @@ func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, en
 		if n.IsRaw() {
 			unsafeWrite(w, n.Value(source))
 		} else {
-			safeWrite(w, n.Value(source))
+			contentWrite(w, n.Value(source))
 			if n.HardLineBreak() {
 				_, _ = w.Write([]byte{' ', '\\', '\n'})
 			} else if n.SoftLineBreak() {
@@ -238,7 +238,7 @@ func unsafeWrite(w util.BufWriter, p []byte) {
 	_, _ = w.Write(p)
 }
 
-func safeWrite(w util.BufWriter, p []byte) {
-	// TODO: Escape.
+func contentWrite(w util.BufWriter, p []byte) {
+	// TODO: Escape (with line start).
 	_, _ = w.Write(p)
 }
