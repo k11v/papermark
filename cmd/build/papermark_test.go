@@ -23,6 +23,10 @@ func TestPapermark(t *testing.T) {
 		// Soft line breaks
 		{Markdown: "foo\nbaz\n", WantTypst: "foo\nbaz\n"},
 		{Markdown: "foo \n baz\n", WantTypst: "foo\nbaz\n"},
+
+		// If expression wasn't terminated with ';' and '.' wasn't escaped,
+		// ".body" would be interpreted as part of the expression.
+		{Markdown: "*foo*.body\n", WantTypst: "#emph[foo];\\.body\n"},
 	}
 
 	for _, tt := range tests {
