@@ -142,8 +142,8 @@ type ImageBlockExtension struct{}
 
 func (e *ImageBlockExtension) Extend(m goldmark.Markdown) {
 	m.Parser().AddOptions(
-		parser.WithParagraphTransformers(
-			util.Prioritized(NewImageBlockParagraphTransformer(), 200),
+		parser.WithASTTransformers(
+			util.Prioritized(NewImageBlockASTTransformer(), 0),
 		),
 	)
 	m.Renderer().AddOptions(renderer.WithNodeRenderers(
