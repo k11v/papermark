@@ -71,8 +71,31 @@ func (r *Renderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Nod
 }
 
 func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderFencedCodeBlock")
-	return ast.WalkContinue, nil
+	if entering {
+		n := node.(*ast.FencedCodeBlock)
+		_, _ = w.WriteString("#raw(")
+		_, _ = w.WriteString("block: true, ")
+
+		if lang := n.Language(source); lang != nil {
+			_, _ = w.WriteString("lang: ")
+			_, _ = w.WriteRune('"')
+			_, _ = w.Write(lang)
+			_, _ = w.WriteRune('"')
+			_, _ = w.WriteString(", ")
+		}
+
+		_, _ = w.WriteRune('"')
+		for i := 0; i < n.Lines().Len(); i++ {
+			l := n.Lines().At(i)
+			strWrite(w, l.Value(source))
+		}
+		_, _ = w.WriteRune('"')
+
+		_, _ = w.WriteString(");")
+		return ast.WalkSkipChildren, nil
+	} else {
+		return ast.WalkContinue, nil
+	}
 }
 
 func (r *Renderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
