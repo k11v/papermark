@@ -73,27 +73,33 @@ func (r *Renderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Nod
 func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		n := node.(*ast.FencedCodeBlock)
-		_, _ = w.WriteString("#raw(")
-		_, _ = w.WriteString("block: true, ")
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("raw")
+		_, _ = w.WriteString("(")
+
+		_, _ = w.WriteString("block: ")
+		_, _ = w.WriteString("true")
+		_, _ = w.WriteString(", ")
 
 		if lang := n.Language(source); lang != nil {
 			_, _ = w.WriteString("lang: ")
-			_, _ = w.WriteRune('"')
+			_, _ = w.WriteString(`"`)
 			_, _ = w.Write(lang)
-			_, _ = w.WriteRune('"')
+			_, _ = w.WriteString(`"`)
 			_, _ = w.WriteString(", ")
 		}
 
-		_, _ = w.WriteRune('"')
+		_, _ = w.WriteString(`"`)
 		for i := 0; i < n.Lines().Len(); i++ {
 			l := n.Lines().At(i)
 			strWrite(w, l.Value(source))
 		}
-		_, _ = w.WriteRune('"')
+		_, _ = w.WriteString(`"`)
 
-		_, _ = w.WriteString(");\n")
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
 		if node.NextSibling() != nil {
-			_, _ = w.WriteRune('\n')
+			_, _ = w.WriteString("\n")
 		}
 		return ast.WalkSkipChildren, nil
 	} else {
