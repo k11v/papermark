@@ -321,6 +321,16 @@ func (r *TableRenderer) renderTable(w util.BufWriter, source []byte, node ast.No
 	if entering {
 		n := node.(*extensionast.Table)
 		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("figure")
+		_, _ = w.WriteString("(\n")
+
+		// TODO: Get caption from attributes.
+		_, _ = w.WriteString("caption: ")
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("Lorem ipsum."))
+		_, _ = w.WriteString(`"`)
+		_, _ = w.WriteString(",\n")
+
 		_, _ = w.WriteString("table")
 		_, _ = w.WriteString("(\n")
 
@@ -356,7 +366,25 @@ func (r *TableRenderer) renderTable(w util.BufWriter, source []byte, node ast.No
 		_, _ = w.WriteString(",\n")
 	} else {
 		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(",\n")
+
+		_, _ = w.WriteString(")")
 		_, _ = w.WriteString(";\n")
+
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("label")
+		_, _ = w.WriteString("(")
+
+		// TODO: Get label from attributes.
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("lorem"))
+		_, _ = w.WriteString(`"`)
+
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
+		if node.NextSibling() != nil {
+			_, _ = w.WriteRune('\n')
+		}
 	}
 	return ast.WalkContinue, nil
 }
