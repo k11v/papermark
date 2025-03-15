@@ -74,6 +74,16 @@ func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node a
 	if entering {
 		n := node.(*ast.FencedCodeBlock)
 		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("figure")
+		_, _ = w.WriteString("(\n")
+
+		// TODO: Get caption from attributes.
+		_, _ = w.WriteString("caption: ")
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("Lorem ipsum."))
+		_, _ = w.WriteString(`"`)
+		_, _ = w.WriteString(",\n")
+
 		_, _ = w.WriteString("raw")
 		_, _ = w.WriteString("(")
 
@@ -94,6 +104,21 @@ func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node a
 			l := n.Lines().At(i)
 			strWrite(w, l.Value(source))
 		}
+		_, _ = w.WriteString(`"`)
+
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(",\n")
+
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
+
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("label")
+		_, _ = w.WriteString("(")
+
+		// TODO: Get label from attributes.
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("lorem"))
 		_, _ = w.WriteString(`"`)
 
 		_, _ = w.WriteString(")")
