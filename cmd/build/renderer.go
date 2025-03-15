@@ -259,11 +259,61 @@ func unsafeWrite(w util.BufWriter, p []byte) {
 }
 
 func contentWrite(w util.BufWriter, p []byte) {
-	// TODO: Escape (with line start).
-	_, _ = w.Write(p)
+	l := 0
+	r := len(p)
+	for i := 0; i < r; i++ {
+		switch p[i] {
+		case
+			'*',  // at word boundaries (strong) and inside "/*" and "*/" (comment)
+			'_',  // at word boundaries (emph)
+			'`',  // likely everywhere (raw)
+			':',  // inside "http://" and "https://" (link) and between the term opening slash and term closing colon (term)
+			'<',  // when adjacent to text (label)
+			'>',  // when adjacent to text (label)
+			'@',  // almost everywhere (ref)
+			'=',  // at line start (heading)
+			'-',  // at line start (list) and inside "--" and "---" (symbols)
+			'+',  // at line start (enum)
+			'.',  // when following line start and unescaped digits (enum)
+			'/',  // at line start (terms) and inside "//" (comment)
+			'$',  // likely everywhere (math)
+			'\\', // likely everywhere (linebreak, escape)
+			'\'', // likely everywhere (smartquote)
+			'"',  // likely everywhere (smartquote)
+			'~',  // likely everywhere (symbols)
+			'#',  // likely everywhere (scripting)
+			'[',  // in square bracket markup (markup)
+			']':  // in square bracket markup (markup)
+			_, _ = w.Write(p[l:i])
+			_ = w.WriteByte('\\')
+			l = i
+		}
+	}
+	_, _ = w.Write(p[l:r])
 }
 
 func strWrite(w util.BufWriter, p []byte) {
-	// TODO: Escape.
-	_, _ = w.Write(p)
+	l := 0
+	r := len(p)
+	for i := 0; i < r; i++ {
+		switch p[i] {
+		case '\\', '"':
+			_, _ = w.Write(p[l:i])
+			_ = w.WriteByte('\\')
+			l = i
+		case '\n':
+			_, _ = w.Write(p[l:i])
+			_, _ = w.WriteString("\\n")
+			l = i + 1
+		case '\r':
+			_, _ = w.Write(p[l:i])
+			_, _ = w.WriteString("\\r")
+			l = i + 1
+		case '\t':
+			_, _ = w.Write(p[l:i])
+			_, _ = w.WriteString("\\t")
+			l = i + 1
+		}
+	}
+	_, _ = w.Write(p[l:r])
 }
