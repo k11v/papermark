@@ -159,6 +159,7 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, e
 	if entering {
 		_, _ = w.WriteString("#raw")
 		_, _ = w.WriteRune('(')
+		_, _ = w.WriteString("block: false, ")
 		_, _ = w.WriteRune('"')
 		for c := n.FirstChild(); c != nil; c = c.NextSibling() {
 			v := c.(*ast.Text).Value(source)
