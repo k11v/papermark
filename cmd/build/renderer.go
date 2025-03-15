@@ -174,7 +174,7 @@ func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, en
 		} else {
 			contentWrite(w, n.Value(source))
 			if n.HardLineBreak() {
-				_, _ = w.Write([]byte{' ', '\\', '\n'})
+				_, _ = w.WriteString(" \\\n")
 			} else if n.SoftLineBreak() {
 				_ = w.WriteByte('\n')
 			}
