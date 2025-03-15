@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log/slog"
-
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
@@ -32,6 +30,13 @@ func NewImageBlockParagraphTransformer() *ImageBlockParagraphTransformer {
 	return &ImageBlockParagraphTransformer{}
 }
 
-func (b *ImageBlockParagraphTransformer) Transform(node *ast.Paragraph, reader text.Reader, pc parser.Context) {
-	slog.Error("unimplemented ImageBlockParagraphTransformer")
+func (b *ImageBlockParagraphTransformer) Transform(n *ast.Paragraph, reader text.Reader, pc parser.Context) {
+	if n.ChildCount() == 1 {
+		c := n.FirstChild()
+		if c.Kind() == ast.KindImage {
+			imageBlock := NewImageBlock()
+			imageBlock.AppendChild(imageBlock, c)
+			n.Parent().ReplaceChild(n.Parent(), n, imageBlock)
+		}
+	}
 }
