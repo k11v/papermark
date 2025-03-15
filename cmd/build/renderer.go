@@ -354,8 +354,42 @@ func (r *ImageBlockRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegister
 	reg.Register(KindImageBlock, r.renderImageBlock)
 }
 
-func (r *ImageBlockRenderer) renderImageBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderImageBlock")
+func (r *ImageBlockRenderer) renderImageBlock(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("figure")
+		_, _ = w.WriteString("(\n")
+
+		// TODO: Get caption from attributes.
+		_, _ = w.WriteString("caption: ")
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("Lorem ipsum."))
+		_, _ = w.WriteString(`"`)
+		_, _ = w.WriteString(",\n")
+
+		_, _ = w.WriteString("[")
+	} else {
+		_, _ = w.WriteString("]")
+		_, _ = w.WriteString(",\n")
+
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
+
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("label")
+		_, _ = w.WriteString("(")
+
+		// TODO: Get label from attributes.
+		_, _ = w.WriteString(`"`)
+		strWrite(w, []byte("lorem"))
+		_, _ = w.WriteString(`"`)
+
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
+		if n.NextSibling() != nil {
+			_, _ = w.WriteString("\n")
+		}
+	}
 	return ast.WalkContinue, nil
 }
 
