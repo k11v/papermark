@@ -50,11 +50,11 @@ func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node,
 	if entering {
 		n := node.(*ast.Heading)
 		_, _ = w.WriteString(strings.Repeat("=", n.Level))
-		_ = w.WriteByte(' ')
+		_, _ = w.WriteRune(' ')
 	} else {
-		_ = w.WriteByte('\n')
+		_, _ = w.WriteRune('\n')
 		if node.NextSibling() != nil {
-			_ = w.WriteByte('\n')
+			_, _ = w.WriteRune('\n')
 		}
 	}
 	return ast.WalkContinue, nil
@@ -83,23 +83,28 @@ func (r *Renderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Nod
 func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		n := node.(*ast.List)
+
 		if n.IsOrdered() {
-			_, _ = w.WriteString("#enum(\n")
-			if n.Start != 1 {
-				_, _ = w.WriteString("start: ")
-				_, _ = w.WriteString(strconv.Itoa(n.Start))
-				_, _ = w.WriteString(",\n")
-			}
+			_, _ = w.WriteString("#enum")
 		} else {
-			_, _ = w.WriteString("#list(\n")
+			_, _ = w.WriteString("#list")
 		}
+		_, _ = w.WriteString("(\n")
+
 		_, _ = w.WriteString("tight: ")
 		_, _ = w.WriteString(strconv.FormatBool(n.IsTight))
 		_, _ = w.WriteString(",\n")
+
+		if n.IsOrdered() && n.Start != 1 {
+			_, _ = w.WriteString("start: ")
+			_, _ = w.WriteString(strconv.Itoa(n.Start))
+			_, _ = w.WriteString(",\n")
+		}
 	} else {
-		_, _ = w.WriteString(");\n")
+		_, _ = w.WriteRune(')')
+		_, _ = w.WriteString(";\n")
 		if node.NextSibling() != nil {
-			_ = w.WriteByte('\n')
+			_, _ = w.WriteRune('\n')
 		}
 	}
 	return ast.WalkContinue, nil
@@ -107,24 +112,25 @@ func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, en
 
 func (r *Renderer) renderListItem(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
-		_ = w.WriteByte('[')
+		_, _ = w.WriteRune('[')
 		fc := n.FirstChild()
 		if fc != nil {
 			if _, ok := fc.(*ast.TextBlock); !ok {
-				_ = w.WriteByte('\n')
+				_, _ = w.WriteRune('\n')
 			}
 		}
 	} else {
-		_, _ = w.WriteString("],\n")
+		_, _ = w.WriteRune(']')
+		_, _ = w.WriteString(",\n")
 	}
 	return ast.WalkContinue, nil
 }
 
 func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
-		_ = w.WriteByte('\n')
+		_, _ = w.WriteRune('\n')
 		if node.NextSibling() != nil {
-			_ = w.WriteByte('\n')
+			_, _ = w.WriteRune('\n')
 		}
 	}
 	return ast.WalkContinue, nil
@@ -133,7 +139,7 @@ func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Nod
 func (r *Renderer) renderTextBlock(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
 		if n.NextSibling() != nil && n.FirstChild() != nil {
-			_ = w.WriteByte('\n')
+			_, _ = w.WriteRune('\n')
 		}
 	}
 	return ast.WalkContinue, nil
@@ -152,8 +158,8 @@ func (r *Renderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node
 func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		_, _ = w.WriteString("#raw")
-		_ = w.WriteByte('(')
-		_ = w.WriteByte('"')
+		_, _ = w.WriteRune('(')
+		_, _ = w.WriteRune('"')
 		for c := n.FirstChild(); c != nil; c = c.NextSibling() {
 			v := c.(*ast.Text).Value(source)
 			if bytes.HasSuffix(v, []byte("\n")) {
@@ -163,11 +169,11 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, e
 				strWrite(w, v)
 			}
 		}
-		_ = w.WriteByte('"')
-		_ = w.WriteByte(')')
+		_, _ = w.WriteRune('"')
+		_, _ = w.WriteRune(')')
 		return ast.WalkSkipChildren, nil
 	} else {
-		_ = w.WriteByte(';')
+		_, _ = w.WriteRune(';')
 		return ast.WalkContinue, nil
 	}
 }
@@ -180,10 +186,10 @@ func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node
 			fn = "#strong"
 		}
 		_, _ = w.WriteString(fn)
-		_ = w.WriteByte('[')
+		_, _ = w.WriteRune('[')
 	} else {
-		_ = w.WriteByte(']')
-		_ = w.WriteByte(';')
+		_, _ = w.WriteRune(']')
+		_, _ = w.WriteRune(';')
 	}
 	return ast.WalkContinue, nil
 }
@@ -213,7 +219,7 @@ func (r *Renderer) renderText(w util.BufWriter, source []byte, node ast.Node, en
 			if n.HardLineBreak() {
 				_, _ = w.WriteString(" \\\n")
 			} else if n.SoftLineBreak() {
-				_ = w.WriteByte('\n')
+				_, _ = w.WriteRune('\n')
 			}
 		}
 	}
@@ -322,7 +328,7 @@ func contentWrite(w util.BufWriter, p []byte) {
 			'[',  // in square bracket markup (markup)
 			']':  // in square bracket markup (markup)
 			_, _ = w.Write(p[l:i])
-			_ = w.WriteByte('\\')
+			_, _ = w.WriteRune('\\')
 			l = i
 		}
 	}
@@ -336,7 +342,7 @@ func strWrite(w util.BufWriter, p []byte) {
 		switch p[i] {
 		case '\\', '"':
 			_, _ = w.Write(p[l:i])
-			_ = w.WriteByte('\\')
+			_, _ = w.WriteRune('\\')
 			l = i
 		case '\n':
 			_, _ = w.Write(p[l:i])
