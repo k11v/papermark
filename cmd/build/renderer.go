@@ -219,8 +219,21 @@ func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node
 }
 
 func (r *Renderer) renderImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderImage")
-	return ast.WalkContinue, nil
+	if entering {
+		n := node.(*ast.Image)
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("image")
+		_, _ = w.WriteString("(")
+
+		_, _ = w.WriteString(`"`)
+		strWrite(w, n.Destination)
+		_, _ = w.WriteString(`"`)
+
+		_, _ = w.WriteString(")")
+		return ast.WalkSkipChildren, nil
+	} else {
+		return ast.WalkContinue, nil
+	}
 }
 
 func (r *Renderer) renderLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
