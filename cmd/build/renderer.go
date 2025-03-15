@@ -129,9 +129,10 @@ func (r *Renderer) renderCodeSpan(w util.BufWriter, source []byte, n ast.Node, e
 			}
 		}
 		_ = w.WriteByte('"')
+		_ = w.WriteByte(')')
 		return ast.WalkSkipChildren, nil
 	} else {
-		_ = w.WriteByte(')')
+		_ = w.WriteByte(';')
 		return ast.WalkContinue, nil
 	}
 }
@@ -147,6 +148,7 @@ func (r *Renderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node
 		_ = w.WriteByte('[')
 	} else {
 		_ = w.WriteByte(']')
+		_ = w.WriteByte(';')
 	}
 	return ast.WalkContinue, nil
 }
