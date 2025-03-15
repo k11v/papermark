@@ -318,22 +318,76 @@ func (r *TableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 }
 
 func (r *TableRenderer) renderTable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderTable")
+	if entering {
+		n := node.(*extensionast.Table)
+		_, _ = w.WriteString("#")
+		_, _ = w.WriteString("table")
+		_, _ = w.WriteString("(\n")
+
+		_, _ = w.WriteString("columns: ")
+		_, _ = w.WriteString("(")
+		for i := 0; i < len(n.Alignments); i++ {
+			if i != 0 {
+				_, _ = w.WriteString(", ")
+			}
+			_, _ = w.WriteString("auto")
+		}
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(",\n")
+
+		_, _ = w.WriteString("align: ")
+		_, _ = w.WriteString("(")
+		for i, a := range n.Alignments {
+			if i != 0 {
+				_, _ = w.WriteString(", ")
+			}
+			switch a {
+			case extensionast.AlignLeft:
+				_, _ = w.WriteString("left")
+			case extensionast.AlignRight:
+				_, _ = w.WriteString("right")
+			case extensionast.AlignCenter:
+				_, _ = w.WriteString("center")
+			default:
+				_, _ = w.WriteString("auto")
+			}
+		}
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(",\n")
+	} else {
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";\n")
+	}
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableHeader(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderTableHeader")
+	if entering {
+		_, _ = w.WriteString("table.header")
+		_, _ = w.WriteString("(")
+	} else {
+		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(",\n")
+	}
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableRow(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderTableRow")
+	if !entering {
+		_, _ = w.WriteString(",\n")
+	}
 	return ast.WalkContinue, nil
 }
 
 func (r *TableRenderer) renderTableCell(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderTableCell")
+	if entering {
+		if node.PreviousSibling() != nil {
+			_, _ = w.WriteString(", ")
+		}
+		_, _ = w.WriteString("[")
+	} else {
+		_, _ = w.WriteString("]")
+	}
 	return ast.WalkContinue, nil
 }
 
