@@ -84,7 +84,7 @@ func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node a
 		if lang := n.Language(source); lang != nil {
 			_, _ = w.WriteString("lang: ")
 			_, _ = w.WriteString(`"`)
-			_, _ = w.Write(lang)
+			strWrite(w, lang)
 			_, _ = w.WriteString(`"`)
 			_, _ = w.WriteString(", ")
 		}
