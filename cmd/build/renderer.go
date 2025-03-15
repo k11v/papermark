@@ -51,10 +51,10 @@ func (r *Renderer) renderHeading(w util.BufWriter, source []byte, node ast.Node,
 		_, _ = w.WriteString(strings.Repeat("=", n.Level))
 		_ = w.WriteByte(' ')
 	} else {
+		_ = w.WriteByte('\n')
 		if node.NextSibling() != nil {
 			_ = w.WriteByte('\n')
 		}
-		_ = w.WriteByte('\n')
 	}
 	return ast.WalkContinue, nil
 }
@@ -91,10 +91,10 @@ func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node
 
 func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if !entering {
+		_ = w.WriteByte('\n')
 		if node.NextSibling() != nil {
 			_ = w.WriteByte('\n')
 		}
-		_ = w.WriteByte('\n')
 	}
 	return ast.WalkContinue, nil
 }
