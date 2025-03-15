@@ -331,7 +331,7 @@ func (r *StrikethroughRenderer) renderStrikethrough(w util.BufWriter, source []b
 // TaskCheckBoxRenderer is based on [github.com/yuin/goldmark/extension.TaskCheckBoxHTMLRenderer].
 type TaskCheckBoxRenderer struct{}
 
-func NewTaskCheckBoxRenderer() renderer.NodeRenderer {
+func NewTaskCheckBoxRenderer() *TaskCheckBoxRenderer {
 	return &TaskCheckBoxRenderer{}
 }
 
@@ -341,6 +341,21 @@ func (r *TaskCheckBoxRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegist
 
 func (r *TaskCheckBoxRenderer) renderTaskCheckBox(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	slog.Error("unimplemented renderTaskCheckBox")
+	return ast.WalkContinue, nil
+}
+
+type ImageBlockRenderer struct{}
+
+func NewImageBlockRenderer() *ImageBlockRenderer {
+	return &ImageBlockRenderer{}
+}
+
+func (r *ImageBlockRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(KindImageBlock, r.renderImageBlock)
+}
+
+func (r *ImageBlockRenderer) renderImageBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	slog.Error("unimplemented renderImageBlock")
 	return ast.WalkContinue, nil
 }
 

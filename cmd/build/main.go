@@ -82,6 +82,7 @@ func NewPapermark() goldmark.Markdown {
 			&TableExtension{},         // https://github.github.com/gfm/#tables-extension-
 			&StrikethroughExtension{}, // https://github.github.com/gfm/#strikethrough-extension-
 			&TaskCheckBoxExtension{},  // https://github.github.com/gfm/#task-list-items-extension-
+			&ImageBlockExtension{},
 			// TODO: Math.
 			// TODO: Footnotes (https://github.blog/changelog/2021-09-30-footnotes-now-supported-in-markdown-fields/).
 			// TODO: Wikilinks.
@@ -134,5 +135,18 @@ func (e *TaskCheckBoxExtension) Extend(m goldmark.Markdown) {
 	))
 	m.Renderer().AddOptions(renderer.WithNodeRenderers(
 		util.Prioritized(NewTaskCheckBoxRenderer(), 500),
+	))
+}
+
+type ImageBlockExtension struct{}
+
+func (e *ImageBlockExtension) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(
+		parser.WithParagraphTransformers(
+			util.Prioritized(NewImageBlockParagraphTransformer(), 200),
+		),
+	)
+	m.Renderer().AddOptions(renderer.WithNodeRenderers(
+		util.Prioritized(NewImageBlockRenderer(), 500),
 	))
 }
