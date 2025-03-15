@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"log/slog"
+	"strconv"
 	"strings"
 
 	"github.com/yuin/goldmark/ast"
@@ -80,12 +81,42 @@ func (r *Renderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Nod
 }
 
 func (r *Renderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderList")
+	if entering {
+		n := node.(*ast.List)
+		if n.IsOrdered() {
+			_, _ = w.WriteString("#enum(\n")
+			if n.Start != 1 {
+				_, _ = w.WriteString("start: ")
+				_, _ = w.WriteString(strconv.Itoa(n.Start))
+				_, _ = w.WriteString(",\n")
+			}
+		} else {
+			_, _ = w.WriteString("#list(\n")
+		}
+		_, _ = w.WriteString("tight: ")
+		_, _ = w.WriteString(strconv.FormatBool(n.IsTight))
+		_, _ = w.WriteString(",\n")
+	} else {
+		_, _ = w.WriteString(");\n")
+		if node.NextSibling() != nil {
+			_ = w.WriteByte('\n')
+		}
+	}
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderListItem")
+func (r *Renderer) renderListItem(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		_ = w.WriteByte('[')
+		fc := n.FirstChild()
+		if fc != nil {
+			if _, ok := fc.(*ast.TextBlock); !ok {
+				_ = w.WriteByte('\n')
+			}
+		}
+	} else {
+		_, _ = w.WriteString("],\n")
+	}
 	return ast.WalkContinue, nil
 }
 
@@ -99,8 +130,12 @@ func (r *Renderer) renderParagraph(w util.BufWriter, source []byte, node ast.Nod
 	return ast.WalkContinue, nil
 }
 
-func (r *Renderer) renderTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
-	slog.Error("unimplemented renderTextBlock")
+func (r *Renderer) renderTextBlock(w util.BufWriter, source []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
+	if !entering {
+		if n.NextSibling() != nil && n.FirstChild() != nil {
+			_ = w.WriteByte('\n')
+		}
+	}
 	return ast.WalkContinue, nil
 }
 
