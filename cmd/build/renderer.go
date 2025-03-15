@@ -91,7 +91,10 @@ func (r *Renderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node a
 		}
 		_, _ = w.WriteRune('"')
 
-		_, _ = w.WriteString(");")
+		_, _ = w.WriteString(");\n")
+		if node.NextSibling() != nil {
+			_, _ = w.WriteRune('\n')
+		}
 		return ast.WalkSkipChildren, nil
 	} else {
 		return ast.WalkContinue, nil
