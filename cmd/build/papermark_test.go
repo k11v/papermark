@@ -14,8 +14,8 @@ func TestPapermark(t *testing.T) {
 	}{
 		// Hard line breaks
 		{Markdown: "foo  \nbaz\n", WantTypst: "foo \\\nbaz\n"},
-		{Markdown: "*foo  \nbar*\n", WantTypst: "#emph[foo \\\nbar]\n"},
-		{Markdown: "`code  \nspan`\n", WantTypst: "#raw(\"code   span\")\n"},
+		{Markdown: "*foo  \nbar*\n", WantTypst: "#emph[foo \\\nbar];\n"},
+		{Markdown: "`code  \nspan`\n", WantTypst: "#raw(\"code   span\");\n"},
 		{Markdown: "<a href=\"foo  \nbar\">\n", WantTypst: "\n"},
 		{Markdown: "foo  \n", WantTypst: "foo\n"},
 		{Markdown: "### foo  \n", WantTypst: "=== foo\n"},
