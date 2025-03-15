@@ -230,6 +230,7 @@ func (r *Renderer) renderImage(w util.BufWriter, source []byte, node ast.Node, e
 		_, _ = w.WriteString(`"`)
 
 		_, _ = w.WriteString(")")
+		_, _ = w.WriteString(";")
 		return ast.WalkSkipChildren, nil
 	} else {
 		return ast.WalkContinue, nil
