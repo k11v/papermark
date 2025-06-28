@@ -9,7 +9,7 @@
 // model / enum
 
 #set enum(
-    numbering: "1.",
+    numbering: "1)",
     indent: 1.25cm,
 )
 
