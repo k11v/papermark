@@ -24,3 +24,8 @@
     justify: true,
     first-line-indent: (amount: 1.25cm, all: true),
 )
+
+#set list(
+    marker: [--],
+    indent: 1.25cm,
+)
