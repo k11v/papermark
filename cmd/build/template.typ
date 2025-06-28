@@ -18,6 +18,24 @@
 // model / footnote
 
 // model / heading
+// TODO: https://forum.typst.app/t/how-to-conditionally-set-heading-block-parameters/2080/3
+
+#set heading(numbering: "1.")
+#show heading: set text(hyphenate: false)
+
+#show heading.where(level: 1): set align(center)
+#show heading.where(level: 1): set block(above: 15pt, below: 10pt)
+#show heading.where(level: 1): set text(size: 16pt)
+#show heading.where(level: 1): upper
+
+#show heading.where(level: 2): set align(center)
+#show heading.where(level: 2): set block(above: 15pt, below: 10pt)
+#show heading.where(level: 2): set text(size: 14pt)
+
+#show selector.or(..(3, 4, 5, 6).map(i => heading.where(level: i))): set align(left)
+#show selector.or(..(3, 4, 5, 6).map(i => heading.where(level: i))): set block(above: 15pt, below: 10pt)
+#show selector.or(..(3, 4, 5, 6).map(i => heading.where(level: i))): set text(size: 14pt)
+#show selector.or(..(3, 4, 5, 6).map(i => heading.where(level: i))): emph
 
 // model / link
 
