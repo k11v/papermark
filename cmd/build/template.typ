@@ -8,3 +8,12 @@
     ),
     numbering: "1",
 )
+
+#set text(
+    font: "Times New Roman",
+    size: 14pt,
+    lang: "ru",
+    hyphenate: auto,
+)
+
+#show raw: set text(font: "Courier New")
