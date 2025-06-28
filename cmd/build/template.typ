@@ -29,3 +29,8 @@
     marker: [--],
     indent: 1.25cm,
 )
+
+#set enum(
+    numbering: "1.",
+    indent: 1.25cm,
+)
