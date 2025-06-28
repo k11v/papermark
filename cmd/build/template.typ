@@ -17,3 +17,10 @@
 )
 
 #show raw: set text(font: "Courier New")
+
+#set par(
+    leading: 1.05em, // Microsoft Word's 1.5
+    spacing: 1.05em, // Microsoft Word's 1.5
+    justify: true,
+    first-line-indent: (amount: 1.25cm, all: true),
+)
