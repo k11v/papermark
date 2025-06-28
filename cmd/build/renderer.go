@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"log/slog"
 	"strconv"
 	"strings"
@@ -42,7 +43,14 @@ func (r *Renderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindString, r.renderString)
 }
 
+//go:embed template.typ
+var templateBytes []byte
+
 func (r *Renderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		unsafeWrite(w, templateBytes)
+		_, _ = w.WriteString("\n")
+	}
 	return ast.WalkContinue, nil
 }
 
